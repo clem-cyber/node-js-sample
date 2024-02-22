@@ -20,6 +20,9 @@ jobs:
           name: Build Docker image
           command: |
             docker build -t node-app:latest .
+            docker tag node-app:latest clem-cyber/nodejs-app:latest
+            echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+            docker push clem-cyber/nodejs-app:latest
 
 workflows:
   version: 2
