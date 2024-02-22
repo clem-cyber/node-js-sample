@@ -3,11 +3,29 @@ version: 2.1
 jobs:
   build:
     docker:
-      - image: circleci/node:14.17.0
-
+      - image: node:alpine
     steps:
       - checkout
+      - run:
+          name: Install dependencies
+          command: npm install
 
+  docker_build:
+    docker:
+      - image: docker:19.03.12
+    steps:
+      - checkout
+      - setup_remote_docker
       - run:
           name: Build Docker image
-          command: docker build -t node_app .
+          command: |
+            docker build -t node-app:latest .
+
+workflows:
+  version: 2
+  build_and_deploy:
+    jobs:
+      - build
+      - docker_build:
+          requires:
+            - build
